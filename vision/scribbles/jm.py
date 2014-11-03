@@ -8,7 +8,7 @@ display = scv.Display()
 while display.isNotDone():
     img = video.getImage()
     try:
-        img = img.gaussianBlur(sigmaX=1, sigmaY=1)
+        img = img.gaussianBlur((5, 5))
         img.save(display)
     except KeyboardInterrupt:
         display.done = True

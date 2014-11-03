@@ -1,13 +1,16 @@
 import SimpleCV as scv
 import cv2
 from SimpleCV.base import np
+from vision.scribbles import readRanges, saveRanges
 
 video = scv.Camera()
 
-lower = [21, 23, 0]
-upper = [49, 237, 123]
+#lower = [21, 23, 0]
+#upper = [49, 237, 123]
 
-# [32, 0, 113], [42, 255, 255] <- w cieniu, wieczorem
+ranges = readRanges()
+lower = ranges[0]
+upper = ranges[1]
 
 def setValue(value, list, index):
     list[index] = value
@@ -49,6 +52,7 @@ display = scv.Display()
 while display.isNotDone():
     img = video.getImage()
     img = img.toHSV()
+    #img = img.gaussianBlur((5, 5))
     thres = cv2.inRange(img.getNumpyCv2(), np.array(lower), np.array(upper))
 
     #simg = scv.Image(thres, cv2image=False)
@@ -58,6 +62,12 @@ while display.isNotDone():
     simg = simg.morphClose()
     simg = simg.morphOpen()
 
+    #circles = simg.findCircle(thresh=250)
+    #if circles:
+    #    circles.show(color=scv.Color.RED, width=1)
+
     simg.save(display)
     if display.mouseRight:
         display.done = True
+
+saveRanges(lower, upper)

@@ -1,16 +1,14 @@
 import SimpleCV as scv
 import cv2
 from SimpleCV.base import np
+from vision.scribbles import Trackbars
+
+
+
+tbars = Trackbars()
+ranges = tbars.getFromUser()
 
 video = scv.Camera()
-
-ranges = [
-    ([34, 25, 51], [38, 255, 255]),
-    ([72, 0, 137], [85, 23, 182]),
-    ([45, 3, 110], [67, 31, 162]),
-    ([21, 23, 0], [49, 237, 67])
-]
-
 display = scv.Display()
 
 while display.isNotDone():
@@ -18,11 +16,7 @@ while display.isNotDone():
     img = img.toHSV()
 
 
-    thres = []
-    for range in ranges:
-        thres.append(cv2.inRange(img.getNumpyCv2(), np.array(range[0]), np.array(range[1])))
-
-    res = reduce(lambda x, y: cv2.add(x, y), thres)
+    res = cv2.inRange(img.getNumpyCv2(), np.array(range[0]), np.array(range[1]))
 
     #simg = scv.Image(thres, cv2image=False)
     simg = scv.Image(res.transpose(1,0))
