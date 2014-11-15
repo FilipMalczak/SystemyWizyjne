@@ -25,6 +25,11 @@ while display.isNotDone():
     simg = simg.morphClose()
     simg = simg.morphOpen()
 
+    #znajdz najwiekszego bloba na masce i on pewnie bedzie pileczka, nowa maska
+    #ewentualnie podejscie z dwoma filtrami, jeden "surowy", ma znalezc tylko kawalek pilki
+    # a drugi lagodniejszy, ale dolaczamy tlyko to, co przylega do znalezionych
+    # powinno rozrosnac znaleziony fragment pilki do calej pilki
+
     blobs = simg.findBlobs()
     if blobs:
        circles = blobs.filter([b.isCircle(0.4) for b in blobs])

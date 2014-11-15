@@ -3,6 +3,7 @@ __author__ = 'Krecik'
 import cv2
 import SimpleCV as scv
 from SimpleCV.base import np
+import math
 
 def readRanges():
     file = open("range.txt", "r")
@@ -95,3 +96,28 @@ class Trackbars:
         cv2.destroyAllWindows()
         saveRanges(self.lower, self.upper)
         return self.lower, self.upper
+
+def distance(p1, p2):
+    return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+
+
+def modifyHistory(blob, history, img):
+    curr = (blob.x, blob.y)
+    # d = 0
+    if len(history) != 0:
+        d = distance(curr, history[-1])
+        if d < img.width/5 and d > img.width/15:
+            history.append(curr)
+    else:
+        history.append(curr)
+
+def drawHistory(history, img):
+    if len(history) > 1:
+        for i in range(len(history)-1):
+            img.drawLine(history[i], history[i+1], scv.Color.RED, 2)
+
+# def confirmMask(maskFoo):
+#     video = scv.Camera()
+#     res = False
+#     display = scv.Display()
+#     while display.isNotDone():
