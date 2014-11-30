@@ -1,6 +1,19 @@
 from math import exp
 from ghmm import *
+import ghmm
 
+################################
+#
+#
+# IGNORE THIS FILE
+#
+#
+################################
+
+def disable_ghmm_log():
+    ghmm.c_log = [ (lambda *args: None) for i in xrange(len(ghmm.c_log)) ]
+
+disable_ghmm_log()
 
 # possible values
 symbols = Alphabet("N E W S NE NW SE SW".split())
@@ -33,8 +46,10 @@ training_set = [
             ["N"]*24 + ["E"]*8 + ["S"]*10,
             ["N"]*20 + ["E"]*10 + ["S"]*15,
             ["N"]*20 + ["E"]*10 + ["S"]*10,
-            ["N"]*20 + ["E"]*3 + ["NE", "NW", "SE", "SE", "NE"] + ["E"]*3 + ["S"]*13,
-            ["N"]*20 + ["E"]*10 + ["S"]*7 + ["SW", "SE", "SW"] + ["S"]*7,
+            # ["N"]*20 + ["E"]*3 + ["NE", "NW", "SE", "SE", "NE"] + ["E"]*3 + ["S"]*13,
+            # ["N"]*20 + ["E"]*10 + ["S"]*7 + ["SW", "SE", "SW"] + ["S"]*7,
+            ["N"]*20 + ["E"]*10 + ["S"]*15,
+            ["N"]*20 + ["E"]*10 + ["S"]*15,
             ["N"]*20 + ["E"]*10 + ["S"]*15
         ]
     #     for raw in [
@@ -53,6 +68,9 @@ training_set = [
 for t in training_set:
     m.baumWelch(t)
 
-seq, p = m.viterbi(EmissionSequence(symbols, "N N N N N N N N N".split()))
+print m
+
+seq, log_p = m.viterbi(EmissionSequence(symbols, "N N N N N N N N N E E E E E E S S S S S S".split()))
 print "most probable state sequence:", seq
-print "probability:", p, exp(p)
+print "log p:", log_p
+print "p:", exp(log_p)
