@@ -24,15 +24,6 @@ def saveRanges(lower, upper):
 class Trackbars:
     def __init__(self, lower = None, upper = None):
         ranges = readRanges()
-        #if lower:
-        #    self.lower = lower
-        #else:
-        #    self.lower = ranges[0]
-        #
-        #if upper:
-        #    self.upper = upper
-        #else:
-        #    self.upper = ranges[0]
 
         self.lower = lower if lower else ranges[0]
         self.upper = upper if upper else ranges[1]
@@ -76,19 +67,13 @@ class Trackbars:
             img = video.getImage()
             img = img.toHSV()
 
-            #img = img.gaussianBlur((5, 5))
 
             thres = cv2.inRange(img.getNumpyCv2(), np.array(self.lower), np.array(self.upper))
 
             simg = scv.Image(thres.transpose(1,0))
 
-            #simg = simg.morphOpen()
             simg = simg.morphClose()
             simg = simg.morphOpen()
-
-            #circles = simg.findCircle(thresh=250)
-            #if circles:
-            #    circles.show(color=scv.Color.RED, width=1)
 
             simg.save(display)
             if display.mouseRight:
@@ -103,10 +88,11 @@ def distance(p1, p2):
 
 def modifyHistory(blob, history, img):
     curr = (blob.x, blob.y)
-    # d = 0
     if len(history) != 0:
         d = distance(curr, history[-1])
-        if d < img.width/5 and d > img.width/15:
+        radius = blob.radius()
+        if d > radius/2 and d < radius*5:
+        # if d < img.width/5 and d > img.width/15:
             history.append(curr)
     else:
         history.append(curr)
@@ -116,8 +102,30 @@ def drawHistory(history, img):
         for i in range(len(history)-1):
             img.drawLine(history[i], history[i+1], scv.Color.RED, 2)
 
-# def confirmMask(maskFoo):
-#     video = scv.Camera()
-#     res = False
-#     display = scv.Display()
-#     while display.isNotDone():
+def getSymbolFromPoints(p1, p2):
+    return getSymbol(getAngle(p1, p2))
+
+def getAngle(p1, p2):
+    xDiff = p2[0] - p1[0]
+    yDiff = p2[1] - p1[1]
+    return math.atan2(yDiff, xDiff)
+
+def getSymbol(angle):
+    angle = angle * 8 / math.pi
+    if angle > 7 or angle < -7:
+        return 1
+    if angle > 5:
+        return 2
+    if angle > 3:
+        return 3
+    if angle > 1:
+        return 4
+    if angle > -1:
+        return 5
+    if angle > -3:
+        return 6
+    if angle > -5:
+        return 7
+    return 8
+
+symbols = {1: 'W', 2: 'NW', 3: 'N', 4: 'NE', 5: 'E', 6: 'SE', 7: 'S', 8: 'SW'}

@@ -2,6 +2,7 @@ import SimpleCV as scv
 import cv2
 from SimpleCV.base import np
 from vision.scribbles import modifyHistory, drawHistory
+from vision.tracker import Tracker
 
 video = scv.Camera()
 
@@ -38,6 +39,7 @@ ranges = [
 ]
 display = scv.Display()
 history = []
+tracker = Tracker()
 while display.isNotDone():
     img = video.getImage()
     img = img.toHSV()
@@ -45,10 +47,8 @@ while display.isNotDone():
 
     res = cv2.inRange(img.getNumpyCv2(), np.array(ranges[0]), np.array(ranges[1]))
 
-    #simg = scv.Image(thres, cv2image=False)
     simg = scv.Image(res.transpose(1,0))
 
-    #simg = simg.morphOpen()
     simg = simg.morphClose()
     simg = simg.morphOpen()
 
@@ -64,16 +64,12 @@ while display.isNotDone():
             simg.drawCircle((circles[-1].x, circles[-1].y), circles[-1].radius(),
                             scv.Color.RED, -1)
             modifyHistory(circles[-1], history, simg)
+            tracker.newBlob(circles[-1])
 
     drawHistory(history, simg)
-
-    # circles = simg.findCircle(thresh=200)
-    # if circles:
-    #     circles.show(color=scv.Color.RED, width=-1)
-    #     for c in circles:
-    #         simg.drawCircle((c.x, c.y), c.radius(), scv.Color.RED, -1)
-
 
     simg.save(display)
     if display.mouseRight:
         display.done = True
+
+print tracker.getSymbolVector()
