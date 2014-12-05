@@ -1,6 +1,6 @@
 if __name__ == "__main__":
     import vision.something
-    import pattern.something
+    import pattern.recognition_demo_test
 
     print "This should be main program"
     print "It should be split into 2 main packages:"
