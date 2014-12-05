@@ -1,4 +1,5 @@
 import math
+import SimpleCV as scv
 
 class Tracker:
 
@@ -29,6 +30,11 @@ class Tracker:
             if d > radius/2 and d < radius*5:
                 self.history.append(curr)
         return symbol
+
+    def drawPath(self, img):
+        if len(self.history) > 1:
+            for i in range(len(self.history)-1):
+                img.drawLine(self.history[i], self.history[i+1], scv.Color.RED, 2)
 
     def getSymbolVector(self):
         res = []
