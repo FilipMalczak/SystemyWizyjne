@@ -1,7 +1,17 @@
-from collections import namedtuple
 import numpy
+import os
 import pickle
 from hmmlearn import hmm
+
+# SYMBOLS = "X N NE E SE S SW W NW"
+SYMBOLS = range(9)
+DUMP_PATH = os.path.join(os.path.dirname(__file__), "default.recognizer")
+
+def default_recognizer():
+    out = Recognizer(DUMP_PATH, SYMBOLS)
+    if os.path.exists(DUMP_PATH):
+        out.load()
+
 
 def _median(l, key=lambda x: x):
     if (len(l)<2):
@@ -17,39 +27,43 @@ class Recognizer:
                         should not occur in observations, but only be added internally by recognizer.
         '''
         self.dump_path = dump_path
-        self._symbols = symbols # todo: reverse this into dict
+        if symbols is None:
+            self.load()
+        else:
+            self._symbols_idxs = self._reverse_indexing(symbols)
         self._models = {}
         self._sizes = {}
         self._empty = symbols[0] if symbols else 0
-        if symbols is None:
-            self.load()
+
+
+    def _reverse_indexing(self, l):
+        return { l[i]: i for i in xrange(len(l)) }
 
     def load(self):
         with open(self.dump_path, "r") as f:
-            (self._symbols, self._models, self._sizes, self._empty) = pickle.load(f)
+            (self._symbols_idxs, self._models, self._sizes, self._empty) = pickle.load(f)
 
     def dump(self):
         with open(self.dump_path, "w") as f:
-            pickle.dump((self._symbols, self._models, self._sizes, self._empty), f)
+            pickle.dump((self._symbols_idxs, self._models, self._sizes, self._empty), f)
 
     def _hmm_states_number(self):
-        # experiment here a little
-        return len(self._symbols)
+        #todo: experiment here a little
+        return len(self._symbols_idxs)
 
     def _cast_to_ints(self, symbol_vector):
-        return [ self._symbols.index(it) for it in symbol_vector ]
+        return [ self._symbols_idxs[it] for it in symbol_vector ]
 
     def _fix_length(self, observations, new_len):
         out = observations[:new_len]
         if len(out)<new_len:
-            out.extend([self._symbols[0]]*(new_len-len(out)))
+            out.extend([self._empty]*(new_len-len(out)))
         return out
 
     def learn(self, pattern_name, *observations_lists):
         '''
         Thanks to *args we can learn by one, or by many examples with the same method.
         '''
-
         new_len = self._sizes.setdefault(pattern_name, _median(observations_lists, len))
         model = self._models.setdefault(pattern_name, hmm.GaussianHMM(self._hmm_states_number()))
         training_matrix = []
@@ -67,5 +81,5 @@ class Recognizer:
 
 
     def recognize(self, observations, method="viterbi"):
-        # todo: figure out, if we want to be able to return None
+        #todo: allow returning None
         return max(self._models.keys(), key=lambda name: self._prob_of_match(observations, name, method))

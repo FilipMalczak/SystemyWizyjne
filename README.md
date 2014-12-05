@@ -13,6 +13,23 @@ Current dependencies
 --------------------
 
 * SimpleCV
-* something for markov (will be filled soon)
+* hmmlearn
+* docopt
+* pygame (in progress)
 
 **Proposal:** Let's try using https://github.com/rags/pynt
+
+CLI
+---
+
+    Usage:
+
+    PROG calibrate
+    PROG new <name> [-d]
+    PROG teach <name> [-d]
+    PROG test
+    PROG daemon
+
+    Options:
+    -d --display            Display camera image with tracking preview
+    -a, --actions=<FILE>     Use custom actions file instead of default (default: ~/.gestures.actions)
