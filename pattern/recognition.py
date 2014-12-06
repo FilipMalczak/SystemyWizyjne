@@ -11,6 +11,7 @@ def default_recognizer():
     out = Recognizer(DUMP_PATH, SYMBOLS)
     if os.path.exists(DUMP_PATH):
         out.load()
+    return out
 
 
 def _median(l, key=lambda x: x):
