@@ -79,6 +79,10 @@ class Recognizer:
         obs = numpy.array([self._cast_to_ints(self._fix_length(observations, new_len))], numpy.int_)
         return self._models[pattern_name].decode(obs, method)[0]
 
+    def is_pattern_known(self, pattern_name):
+        return pattern_name in self._models.keys()
+
+
 
     def recognize(self, observations, method="viterbi"):
         #todo: allow returning None

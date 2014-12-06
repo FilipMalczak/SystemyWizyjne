@@ -2,8 +2,8 @@ import docopt
 
 USAGE = '''Usage:
     PROG calibrate
-    PROG new <name> [-d] [--actions FILE]
-    PROG teach <name> [-d] [--actions FILE]
+    PROG new <name>
+    PROG teach <name>
     PROG test
     PROG daemon [--actions FILE]
 
