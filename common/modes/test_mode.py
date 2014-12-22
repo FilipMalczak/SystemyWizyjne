@@ -33,7 +33,7 @@ class TestMode:
                         tracking = False
                     else:
                         tracking = True
-                        moment = time()
+                    moment = time()
             if display.mouseRight:
                 display.done = True
         display.quit()
