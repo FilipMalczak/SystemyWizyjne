@@ -1,8 +1,8 @@
 import SimpleCV as scv
 import json
-import cv2
-from SimpleCV.base import np
 from vision.detection import transformFrame
+from time import time
+from common.config import d_time
 
 CONFIG_FILE = "./config.json"
 
@@ -39,6 +39,7 @@ class Calibrator:
 
     def askUser(self):
         ok = False
+        moment = time()
         display = scv.Display()
         while display.isNotDone():
             img = self.video.getImage()
@@ -48,7 +49,9 @@ class Calibrator:
             img.drawText("LMB to accept, MMB to change mode, RMB to discard", 0, 40, fontsize=30)
             img.save(display)
             if display.mouseMiddle:
-                self.twoRange = not self.twoRange
+                if time() - moment > d_time:
+                    self.twoRange = not self.twoRange
+                    moment = time()
             if display.mouseLeft:
                 ok = True
                 display.done = True

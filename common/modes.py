@@ -9,10 +9,10 @@ def calibrate():
 
 USAGE = '''Usage:
     PROG calibrate
-    PROG new <name> [-d]
-    PROG teach <name> [-d]
+    PROG new <name>
+    PROG teach <name>
     PROG test
-    PROG daemon [--actions FILE]
+    PROG daemon [-d] [--actions FILE]
 
 Options:
     -d, --display               Display camera image with tracking preview
