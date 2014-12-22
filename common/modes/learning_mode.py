@@ -17,6 +17,7 @@ class LearningMode:
         self.new = new
 
     def run(self):
+        abort = False
         display = scv.Display()
         tracking = False
         moment = time()
@@ -39,12 +40,14 @@ class LearningMode:
             if display.mouseRight:
                 if self.new and len(self.examples) < min_examples:
                     res = dialog.confirm(self._get_dialog_label(), 'Warning', mode=2)
+                    abort = res
                 else:
                     res = True
                 display.done = res
         display.quit()
-        recognizer.learn(self.name, *self.examples)
-        recognizer.dump()
+        if not abort:
+            recognizer.learn(self.name, *self.examples)
+            recognizer.dump()
 
     def _get_dialog_label(self):
         return "When teaching a new gesture you need to provide " + str(min_examples) +\
