@@ -1,12 +1,15 @@
 import math
 import SimpleCV as scv
+from vision.postprocessing import postprocess
 
 class Tracker:
 
     SYMBOLS = {1: 'E', 2: 'NE', 3: 'N', 4: 'NW', 5: 'W', 6: 'SW', 7: 'S', 8: 'SE'}
 
-    def __init__(self):
+
+    def __init__(self, observation_size = 100):
         self.history = []
+        self.observation_size = observation_size
 
     @property
     def previous(self):
@@ -37,10 +40,11 @@ class Tracker:
                 img.drawLine(self.history[i], self.history[i+1], scv.Color.RED, 2)
 
     def getSymbolVector(self):
-        res = []
-        for i in range(len(self.history)-1):
-            res.append(self.getSymbolFromPoints(self.history[i+1], self.history[i]))
-        return res
+        # res = []
+        # for i in range(len(self.history)-1):
+        #     res.append(self.getSymbolFromPoints(self.history[i+1], self.history[i]))
+        observations = postprocess(self.history, self.observation_size)
+        return map(lambda x: self.getSymbolFromPoints(*x), zip(observations[:-1], observations[1:]))
 
     def getReadableSymbolVector(self):
         vector = self.getSymbolVector()

@@ -37,6 +37,10 @@ class LearningMode:
                     else:
                         tracking = True
                     moment = time()
+            if display.mouseMiddle:
+                if tracking:
+                    self.detector.resetTracker()
+                    tracking = False
             if display.mouseRight:
                 if self.new and len(self.examples) < min_examples:
                     res = dialog.confirm(self._get_dialog_label(), 'Warning', mode=2)

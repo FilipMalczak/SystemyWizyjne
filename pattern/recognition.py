@@ -50,7 +50,8 @@ class Recognizer:
 
     def _hmm_states_number(self):
         #todo: experiment here a little
-        return len(self._symbols_idxs)
+        # return len(self._symbols_idxs)
+        return 5
 
     def _cast_to_ints(self, symbol_vector):
         return [ self._symbols_idxs[it] for it in symbol_vector ]
