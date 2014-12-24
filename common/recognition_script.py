@@ -42,3 +42,4 @@ while display.isNotDone():
             moment = time()
     if display.mouseRight:
         display.done = True
+# recognizer.dump()

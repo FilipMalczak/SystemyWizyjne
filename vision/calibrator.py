@@ -3,12 +3,14 @@ import json
 from vision.detection import transformFrame
 from time import time
 from common.config import d_time
+from common.dirs import config
 
-CONFIG_FILE = "./config.json"
+CONFIG_FILE = config("config.json")
 
 class Calibrator:
 
     def __init__(self, video = None):
+        print CONFIG_FILE
         self.twoRange = False
         self.pixel = None
         self.video = video if video else scv.Camera()

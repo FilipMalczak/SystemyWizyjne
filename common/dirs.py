@@ -5,4 +5,7 @@ BASE_DIR_FOR_CONFIG = os.path.expanduser("~") # it is expected to be multiplatfo
 CONFIG_DIR = os.path.join(BASE_DIR_FOR_CONFIG, config.app_code)
 
 def config(*names):
-    os.path.join(CONFIG_DIR, *names)
+    path = os.path.join(CONFIG_DIR, *names)
+    if not os.path.exists(os.path.dirname(path)):
+        os.makedirs(os.path.dirname(path))
+    return path

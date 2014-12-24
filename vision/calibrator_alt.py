@@ -4,8 +4,9 @@ import json
 import cv2
 from SimpleCV.base import np
 from vision.detection import transformFrame
+from common.dirs import config
 
-CONFIG_FILE = "./config.json"
+CONFIG_FILE = config("config.json")
 
 class AltCalibrator:
 

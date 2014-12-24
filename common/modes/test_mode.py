@@ -3,6 +3,7 @@ from vision.detection import Detector
 from time import time
 from common.config import d_time, recognizer
 
+label1 = {True: "ON", False: "OFF"}
 
 class TestMode:
 
@@ -22,7 +23,7 @@ class TestMode:
             if tracking:
                 self.detector.detectAndTrackOnFrame(img)
                 self.detector.tracker.drawPath(img)
-            img.drawText(str(tracking), 0, 0, fontsize=30)
+            img.drawText(label1[tracking], 0, 0, fontsize=30)
             img.save(display)
             if display.mouseLeft:
                 if time() - moment > d_time:
