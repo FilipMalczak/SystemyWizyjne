@@ -11,6 +11,8 @@ def config(*names):
 
 vision_config = config("vision.json")
 
+actions_config = config("default.actions")
+
 recognition_dir = config("recognition")
 models_dir = config("recognition", "models")
 prob_boundaries = config("recognition", "probs.json")

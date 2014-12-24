@@ -5,7 +5,7 @@ from vision.detection import transformFrame
 from time import time
 from common.config import d_time
 
-CONFIG_FILE = "./config.json"
+CONFIG_FILE = dirs.vision_config
 
 class Calibrator:
 

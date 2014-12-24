@@ -15,7 +15,6 @@ Current dependencies
 * SimpleCV
 * hmmlearn
 * docopt
-* pygame (in progress)
 
 **Proposal:** Let's try using https://github.com/rags/pynt
 
@@ -23,13 +22,14 @@ CLI
 ---
 
     Usage:
-
-    PROG calibrate
-    PROG new <name> [-d]
-    PROG teach <name> [-d]
-    PROG test
-    PROG daemon
+        PROG calibrate [-h]
+        PROG new <name>
+        PROG teach <name>
+        PROG test
+        PROG daemon [-d] [--actions FILE]
+        PROG pattern (activate|deactivate|remove) <name>
 
     Options:
-    -d --display            Display camera image with tracking preview
-    -a, --actions=<FILE>     Use custom actions file instead of default (default: ~/.gestures.actions)
+        -h, --histogram             Use histogram based calibration
+        -d, --display               Display camera image with tracking preview
+        -a=FILE --actions=FILE      Use custom actions file instead of default (default: ~/SW14/default.actions)

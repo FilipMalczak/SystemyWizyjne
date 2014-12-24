@@ -25,12 +25,13 @@ class TestMode:
                 self.detector.detectAndTrackOnFrame(img)
                 self.detector.tracker.drawPath(img)
             img.drawText(label1[tracking], 0, 0, fontsize=30)
+            img.drawText("LMB to start/stop tracking, RMB to exit", 0, 40, fontsize=30)
             img.save(display)
             if display.mouseLeft:
                 if time() - moment > d_time:
                     if tracking:
                         recognized = recognizer.recognize(self.detector.tracker.getSymbolVector())
-                        print recognized
+                        print recognized[0][0] if recognized[0] else None
                         self.detector.resetTracker()
                         tracking = False
                     else:

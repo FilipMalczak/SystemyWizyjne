@@ -1,13 +1,14 @@
 import os
-from common.dirs import config
+from common import dirs
 
 class ActionExecutor:
 
     # it should load action definitions from file
 
     def __init__(self, path=None):
-        self.path = path if path else config("default.actions")
+        self.path = path if path else dirs.actions_config
         self.definitions = {}
+        self.load()
 
 
     def load(self):
@@ -24,6 +25,6 @@ class ActionExecutor:
         If there is no action for this name, print the name on stdout
         '''
         if name in self.definitions:
-            print self.definitions[name]
+            print self.definitions[name]    #TODO: make it do stuff
         else:
             print name

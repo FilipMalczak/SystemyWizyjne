@@ -43,8 +43,10 @@ class Tracker:
         # res = []
         # for i in range(len(self.history)-1):
         #     res.append(self.getSymbolFromPoints(self.history[i+1], self.history[i]))
-        observations = postprocess(self.history, self.observation_size)
-        return map(lambda x: self.getSymbolFromPoints(*x), zip(observations[:-1], observations[1:]))
+        if len(self.history)>1:
+            observations = postprocess(self.history, self.observation_size)
+            return map(lambda x: self.getSymbolFromPoints(*x), zip(observations[:-1], observations[1:]))
+        return []
 
     def getReadableSymbolVector(self):
         vector = self.getSymbolVector()

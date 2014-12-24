@@ -3,6 +3,7 @@ from common.modes.calibration_mode import CalibrationMode
 from common.modes.daemon_mode import DaemonMode
 from common.modes.learning_mode import LearningMode
 from common.modes.test_mode import TestMode
+from common.context import recognizer
 
 USAGE = '''Usage:
     PROG calibrate [-h]
@@ -10,6 +11,7 @@ USAGE = '''Usage:
     PROG teach <name>
     PROG test
     PROG daemon [-d] [--actions FILE]
+    PROG pattern (activate|deactivate|remove) <name>
 
 Options:
     -h, --histogram             Use histogram based calibration
@@ -23,7 +25,14 @@ def main(args=[]):
         CalibrationMode(parsed['--histogram']).run()
     if parsed['new'] or parsed['teach']:
         LearningMode(parsed['<name>'], parsed['new']).run()
-    elif parsed['test']:
+    if parsed['test']:
         TestMode().run()
-    elif parsed['daemon']:
+    if parsed['daemon']:
         DaemonMode(parsed['--display'], parsed['--actions']).run()
+    if parsed['pattern']:
+        if parsed['activate']:
+            recognizer.activate(parsed['<name>'])
+        if parsed['deactivate']:
+            recognizer.deactivate(parsed['<name>'])
+        if parsed['remove']:
+            recognizer.remove(parsed['<name>'])
