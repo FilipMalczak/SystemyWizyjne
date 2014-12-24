@@ -1,5 +1,7 @@
 from SimpleCV import *
-from vision.scribbles import saveRanges, Trackbars
+
+from trash.vision.scribbles import Trackbars
+
 # Example for CAMShift Tracker
 def foo(image):
     return image.meanColor()

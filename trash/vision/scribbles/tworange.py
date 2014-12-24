@@ -1,8 +1,10 @@
 import SimpleCV as scv
 import cv2
 from SimpleCV.base import np
-from vision.scribbles import modifyHistory, drawHistory
+
+from trash.vision.scribbles import modifyHistory, drawHistory
 from vision.tracker import Tracker
+
 
 video = scv.Camera()
 

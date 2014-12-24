@@ -4,6 +4,7 @@ USAGE = '''Usage:
     PROG calibrate
     PROG new <name>
     PROG teach <name>
+    PROG recalculate
     PROG test
     PROG daemon [-d] [--actions FILE]
 

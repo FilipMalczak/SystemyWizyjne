@@ -1,8 +1,8 @@
 import SimpleCV as scv
 import cv2
 from SimpleCV.base import np
-from vision.scribbles import Trackbars
 
+from trash.vision.scribbles import Trackbars
 
 
 tbars = Trackbars()

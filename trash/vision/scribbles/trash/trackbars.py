@@ -1,7 +1,9 @@
 import SimpleCV as scv
 import cv2
 from SimpleCV.base import np
-from vision.scribbles import readRanges, saveRanges
+
+from trash.vision.scribbles import readRanges, saveRanges
+
 
 video = scv.Camera()
 

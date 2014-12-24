@@ -1,7 +1,7 @@
 from common.config import recognizer
 from common.keypress import KeypressReactor
 from common.placeholder import show_display, hide_display
-import unicurses
+from trash import unicurses
 
 
 def calibrate():

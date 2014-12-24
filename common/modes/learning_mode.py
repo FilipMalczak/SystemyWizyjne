@@ -1,6 +1,7 @@
 from time import time
 import SimpleCV as scv
-from common.config import d_time, recognizer, min_examples
+from common.config import d_time, min_examples
+from common.context import recognizer
 from vision.detection import Detector
 import toolbox.EasyGame as dialog
 

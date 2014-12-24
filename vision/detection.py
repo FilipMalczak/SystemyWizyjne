@@ -3,9 +3,10 @@ import cv2
 import json
 import time
 from SimpleCV.base import np
+from common import dirs
 from vision.tracker import Tracker
 
-CONFIG_FILE = "./config.json"
+CONFIG_FILE = dirs.vision_config
 
 def transformFrame(img, twoRange, strict_ranges, loose_ranges):
     img = img.toHSV()

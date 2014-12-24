@@ -1,7 +1,8 @@
 import SimpleCV as scv
+from common.context import recognizer
 from vision.detection import Detector
 from time import time
-from common.config import d_time, recognizer
+from common.config import d_time
 
 
 class TestMode:
