@@ -105,6 +105,40 @@ class Recognizer:
             with open(dirs.model(pattern), "w") as f:
                 pickle.dump((self._models[pattern], self._training_obs[pattern]), f)
 
+    def activate(self, name):
+        if not name in self._active:
+            if os.path.exists(dirs.model(name)):
+                with open(dirs.model(name), "w") as f:
+                    (self._models[name], self._training_obs[name]) = pickle.load(f)
+                self._dirty = True
+            else:
+                raise Exception("Pattern "+name+" doesn't exist, so it cannot be activated!")
+
+    def deactivate(self, name):
+        assert name in self._active, "Pattern "+name+" isn't active, so it cannot be deactivated!"
+        self._active.remove(name)
+        with open(dirs.model(name), "w") as f:
+            pickle.dump((self._models[name], self._training_obs[name]), f)
+        del self._models[name]
+        del self._training_obs[name]
+        self._dirty = True
+
+    def remove(self, name):
+        '''
+        Ensures that there is no trace of such pattern - whether it was active, inactive or didn't exist,
+        outcome is the same.
+        '''
+        if name in self._active:
+            self._active.remove(name)
+            self._dirty = True
+        if os.path.exists(dirs.model(name)):
+            os.remove(dirs.model(name))
+        if name in self._models:
+            del self._models[name]
+        if name in self._training_obs:
+            del self._training_obs[name]
+
+
     def _cast_to_ints(self, symbol_vector):
         return [ self._symbols_idxs[it] for it in symbol_vector ]
 
