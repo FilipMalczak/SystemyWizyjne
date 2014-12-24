@@ -6,7 +6,7 @@ from pattern.recognition import default_recognizer
 from time import time
 
 
-gesture = 'up'
+gesture = 'down'
 examples = []
 d_time = 0.5
 
