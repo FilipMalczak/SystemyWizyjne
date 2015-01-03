@@ -23,12 +23,12 @@ class LearningMode:
         tracking = False
         moment = time()
         while display.isNotDone():
-            img = self.video.getImage()
+            img = self.video.getImage().flipHorizontal()
             if tracking:
                 self.detector.detectAndTrackOnFrame(img)
                 self.detector.tracker.drawPath(img)
             img.drawText(label1[tracking], 0, 0, fontsize=30)
-            frame.drawText("LMB to start/stop tracking, RMB to exit", 0, 40, fontsize=30)
+            img.drawText("LMB to start/stop tracking, RMB to exit", 0, 40, fontsize=30)
             img.save(display)
             if display.mouseLeft:
                 if time() - moment > d_time:

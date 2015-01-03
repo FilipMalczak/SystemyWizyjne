@@ -1,4 +1,5 @@
 import os
+import subprocess
 from common import dirs
 
 class ActionExecutor:
@@ -26,5 +27,6 @@ class ActionExecutor:
         '''
         if name in self.definitions:
             print self.definitions[name]    #TODO: make it do stuff
+            subprocess.call(self.definitions[name])
         else:
             print name

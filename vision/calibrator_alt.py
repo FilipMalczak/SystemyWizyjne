@@ -28,12 +28,12 @@ class AltCalibrator:
         self.saveConfig()
 
     def captureHistogram(self):
-        img = self.video.getImage()
+        img = self.video.getImage().flipHorizontal()
         self.x = img.width/2
         self.y = img.height/2
         display = scv.Display()
         while display.isNotDone():
-            img = self.video.getImage()
+            img = self.video.getImage().flipHorizontal()
             img2 = img.copy()
             img2.drawCircle((self.x, self.y), self.radius, scv.Color.RED, 2)
             img2.save(display)
@@ -73,7 +73,7 @@ class AltCalibrator:
         ok = False
         display = scv.Display()
         while display.isNotDone():
-            img = self.video.getImage()
+            img = self.video.getImage().flipHorizontal()
             img = transformFrame(img, self.twoRange, self.strict_ranges, self.loose_ranges)
             mode = "double" if self.twoRange else "single"
             img.drawText("Mode: " + mode, 0, 0, fontsize=30)

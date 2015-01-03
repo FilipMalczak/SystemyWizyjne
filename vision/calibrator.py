@@ -26,7 +26,7 @@ class Calibrator:
     def capturePixel(self):
         display = scv.Display()
         while display.isNotDone():
-            img = self.video.getImage()
+            img = self.video.getImage().flipHorizontal()
             img2 = img.copy()
             img2.drawCircle((img2.width/2, img2.height/2), 5, scv.Color.RED, -1)
             img2.save(display)
@@ -43,7 +43,7 @@ class Calibrator:
         moment = time()
         display = scv.Display()
         while display.isNotDone():
-            img = self.video.getImage()
+            img = self.video.getImage().flipHorizontal()
             img = transformFrame(img, self.twoRange, self.strict_ranges, self.loose_ranges)
             mode = "double" if self.twoRange else "single"
             img.drawText("Mode: " + mode, 0, 0, fontsize=30)

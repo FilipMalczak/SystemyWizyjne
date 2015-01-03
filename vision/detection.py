@@ -52,7 +52,7 @@ class Detector:
     def detectAndTrackForDuration(self, duration=5):
         startTime = time.time()
         while time.time() - startTime < duration:
-            frame = self.video.getImage()
+            frame = self.video.getImage().flipHorizontal()
             self.detectAndTrackOnFrame(frame)
 
 

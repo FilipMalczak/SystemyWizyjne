@@ -113,6 +113,7 @@ class Recognizer:
                 self._dirty = True
             else:
                 raise Exception("Pattern "+name+" doesn't exist, so it cannot be activated!")
+        self.dump()
 
     def deactivate(self, name):
         assert name in self._active, "Pattern "+name+" isn't active, so it cannot be deactivated!"
@@ -122,6 +123,7 @@ class Recognizer:
         del self._models[name]
         del self._training_obs[name]
         self._dirty = True
+        self.dump()
 
     def remove(self, name):
         '''
@@ -137,6 +139,7 @@ class Recognizer:
             del self._models[name]
         if name in self._training_obs:
             del self._training_obs[name]
+        self.dump()
 
 
     def _cast_to_ints(self, symbol_vector):
@@ -169,7 +172,9 @@ class Recognizer:
     def _prob_of_match(self, observations, pattern_name, method):
         new_len = self._obs_length
         obs = numpy.array([self._cast_to_ints(self._fix_length(observations, new_len))], numpy.int_)
-        return self._models[pattern_name].decode(obs, method)[0]
+        out = self._models[pattern_name].decode(obs, method)[0]
+        print pattern_name, out
+        return out
 
     def is_pattern_known(self, pattern_name):
         return pattern_name in self._models.keys()
@@ -188,8 +193,8 @@ class Recognizer:
                 self._prob_of_match(x, pattern_name, method)
                 for x in self._training_obs[checked]
             ]
-        # centroid_maker = lambda l : 1.0*sum(l)/len(l)
-        centroid_maker = _median
+        centroid_maker = lambda l : 1.0*sum(l)/len(l)
+        # centroid_maker = _median
         prob_centroids = {
             k: centroid_maker(v)
             for k,v in prob_logs_per_pattern.iteritems()
@@ -219,5 +224,5 @@ class Recognizer:
             boundary = self._bounds[pattern]
             if prob_log>boundary:
                 out.append((pattern, prob_log, boundary))
-        out = sorted(out, key=lambda x: x[1]/x[2], reverse=True)
+        out = sorted(out, key=lambda x: x[1]-x[2], reverse=True)
         return out[0] if len(out) else None, out

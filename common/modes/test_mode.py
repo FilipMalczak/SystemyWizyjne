@@ -20,7 +20,7 @@ class TestMode:
 
         moment = time()
         while display.isNotDone():
-            img = self.video.getImage()
+            img = self.video.getImage().flipHorizontal()
             if tracking:
                 self.detector.detectAndTrackOnFrame(img)
                 self.detector.tracker.drawPath(img)

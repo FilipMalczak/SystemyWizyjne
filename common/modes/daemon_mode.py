@@ -25,7 +25,7 @@ class DaemonMode:
 
         moment = time()
         while display.isNotDone():
-            img = self.video.getImage()
+            img = self.video.getImage().flipHorizontal()
             if tracking:
                 self.detector.detectAndTrackOnFrame(img)
                 if self.display:
