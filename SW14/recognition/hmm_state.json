@@ -18,14 +18,11 @@ I7
 sI8
 I8
 s(lp1
-S'left'
+S'right'
 p2
-aS'right'
+aS'up'
 p3
-aS'circle'
-p4
 aI100
 I5
-I00
-tp5
+tp4
 .

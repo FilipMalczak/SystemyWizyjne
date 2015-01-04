@@ -4,23 +4,19 @@ import os
 import pickle
 from hmmlearn import hmm
 import sys
+from pattern.decision import default_decider
+
 print sys.path
 from common import dirs
 from common.config import obs_length, states
 
-
 SYMBOLS = range(9)
 
 def default_recognizer():
-    out = Recognizer(SYMBOLS)
+    out = Recognizer(default_decider(), SYMBOLS)
     out.load()
     return out
 
-
-def _median(l, key=lambda x: x):
-    if (len(l)<2):
-        return l[0]
-    return key(sorted(l, key=key)[int(len(l)/2)])
 
 class Recognizer:
     '''
@@ -45,8 +41,9 @@ class Recognizer:
 
     '''
 
-    def __init__(self, symbols=None, length=obs_length, states=states):
+    def __init__(self, decider, symbols=None, length=obs_length, states=states):
         '''
+        :param decider: instance of pattern.decision.Decider
         :param symbols: List of observable symbols. All observations used in public methods must consist of
                         these elements. First element of list will be used as empty symbol. Empty symbol
                         should not occur in observations, but only be added internally by recognizer.
@@ -54,6 +51,7 @@ class Recognizer:
                         down, if they are too short, some empty symbols are appended
         :param states: number of HMM states
         '''
+        self._decider = decider
         if symbols is None:
             self.load()
         else:
@@ -63,10 +61,12 @@ class Recognizer:
         self._obs_length = length
         self._states = states
         self._empty = symbols[0] if symbols else 0
-        self._bounds = {}
         self._active = []
-        self._dirty = True
+        self._dirty = False
+        self._recalculate()
 
+    def _recalculate(self):
+        self._dirty = self._decider.recalculate(self._training_obs, lambda name, obs: self._prob_of_match(obs, name, "viterbi"))
 
     def _reverse_indexing(self, l):
         return { l[i]: i for i in xrange(len(l)) }
@@ -78,14 +78,15 @@ class Recognizer:
                     self._symbols_idxs,
                     self._active,
                     self._obs_length,
-                    self._states,
-                    self._dirty
+                    self._state
                 ) = pickle.load(f)
-            with open(dirs.prob_boundaries, "r") as f:
-                self._bounds = pickle.load(f)
+            # with open(dirs.prob_boundaries, "r") as f:
+            #     self._bounds = pickle.load(f)
             for pattern in self._active:
                 with open(dirs.model(pattern), "r") as f:
                     (self._models[pattern], self._training_obs[pattern]) = pickle.load(f)
+        self._dirty = False
+        self._recalculate()
 
     def dump(self):
         with open(dirs.hmm_state, "w") as f:
@@ -94,13 +95,12 @@ class Recognizer:
                     self._symbols_idxs,
                     self._active,
                     self._obs_length,
-                    self._states,
-                    self._dirty
+                    self._states
                 ),
                 f
             )
-        with open(dirs.prob_boundaries, "w") as f:
-            pickle.dump(self._bounds, f)
+        # with open(dirs.prob_boundaries, "w") as f:
+        #     pickle.dump(self._bounds, f)
         for pattern in self._active:
             with open(dirs.model(pattern), "w") as f:
                 pickle.dump((self._models[pattern], self._training_obs[pattern]), f)
@@ -108,7 +108,7 @@ class Recognizer:
     def activate(self, name):
         if not name in self._active:
             if os.path.exists(dirs.model(name)):
-                with open(dirs.model(name), "w") as f:
+                with open(dirs.model(name), "r") as f:
                     (self._models[name], self._training_obs[name]) = pickle.load(f)
                 self._dirty = True
             else:
@@ -179,50 +179,18 @@ class Recognizer:
     def is_pattern_known(self, pattern_name):
         return pattern_name in self._models.keys()
 
-    def recalculate_boundaries(self):
-        '''
-        Recalculates only active
-        '''
-        for key in self._active:
-            self._bounds[key] = self._recalculate(key)
-
-    def _recalculate(self, pattern_name, method="viterbi"):
-        prob_logs_per_pattern = defaultdict(list)
-        for checked in self._active:
-            prob_logs_per_pattern[checked] = [
-                self._prob_of_match(x, pattern_name, method)
-                for x in self._training_obs[checked]
-            ]
-        centroid_maker = lambda l : 1.0*sum(l)/len(l)
-        # centroid_maker = _median
-        prob_centroids = {
-            k: centroid_maker(v)
-            for k,v in prob_logs_per_pattern.iteritems()
-        }
-        max_diff = 0.0
-        out = prob_centroids[pattern_name]
-        for k, v in prob_centroids.iteritems():
-            diff = v - prob_centroids[pattern_name]
-            if diff>max_diff:
-                max_diff = diff
-                out = v
-        return out
 
     def recognize(self, observations, method="viterbi"):
         '''
         :return: tuple (most_probable_pattern_name, ranking) where ranking is list of tuples (pattern name, log of prob, boundary)
                 containing only those patterns that have results above boundary
         '''
-        #todo: allow returning None
+        print self._active
         if self._dirty:
-            self.recalculate_boundaries()
-            self._dirty = False
-            self.dump()
-        out = []
+            self._recalculate()
+            # self._dirty = False
+        probs = {}
         for pattern in self._active:
-            prob_log = self._prob_of_match(observations, pattern, method)
-            boundary = self._bounds[pattern]
-            if prob_log>boundary:
-                out.append((pattern, prob_log, boundary))
-        out = sorted(out, key=lambda x: x[1]-x[2], reverse=True)
+            probs[pattern] = self._prob_of_match(observations, pattern, method)
+        out = self._decider.decide(probs)
         return out[0] if len(out) else None, out
