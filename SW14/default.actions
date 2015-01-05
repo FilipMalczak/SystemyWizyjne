@@ -1,0 +1,8 @@
+up;echo "up"
+right;echo "right"
+down;echo "down"
+left;echo "left"
+down_right;echo "down_right"
+down_left;echo "down_left"
+up_right;echo "up_right"
+up_left;echo "up_left"

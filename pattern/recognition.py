@@ -3,10 +3,8 @@ import numpy
 import os
 import pickle
 from hmmlearn import hmm
-import sys
 from pattern.decision import default_decider
 
-print sys.path
 from common import dirs
 from common.config import obs_length, states
 
@@ -173,7 +171,7 @@ class Recognizer:
         new_len = self._obs_length
         obs = numpy.array([self._cast_to_ints(self._fix_length(observations, new_len))], numpy.int_)
         out = self._models[pattern_name].decode(obs, method)[0]
-        print pattern_name, out
+        # print pattern_name, out
         return out
 
     def is_pattern_known(self, pattern_name):
@@ -185,7 +183,7 @@ class Recognizer:
         :return: tuple (most_probable_pattern_name, ranking) where ranking is list of tuples (pattern name, log of prob, boundary)
                 containing only those patterns that have results above boundary
         '''
-        print self._active
+        # print self._active
         if self._dirty:
             self._recalculate()
             # self._dirty = False

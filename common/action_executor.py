@@ -1,6 +1,8 @@
 import os
 import subprocess
 from common import dirs
+from common.dirs import config
+
 
 class ActionExecutor:
 
@@ -11,14 +13,14 @@ class ActionExecutor:
         self.definitions = {}
         self.load()
 
-
     def load(self):
+        if os.path.exists(config(self.path)):
+            self.path = config(self.path)
         if os.path.exists(self.path):
             with open(self.path, 'r') as f:
                 for line in f:
                     splat = line.split(';')
                     self.definitions[splat[0]] = splat[1]
-
 
     def execute(self, name):
         '''
@@ -26,7 +28,6 @@ class ActionExecutor:
         If there is no action for this name, print the name on stdout
         '''
         if name in self.definitions:
-            print self.definitions[name]    #TODO: make it do stuff
             subprocess.call(self.definitions[name])
         else:
             print name

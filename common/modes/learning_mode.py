@@ -29,6 +29,8 @@ class LearningMode:
                 self.detector.tracker.drawPath(img)
             img.drawText(label1[tracking], 0, 0, fontsize=30)
             img.drawText("LMB to start/stop tracking, RMB to exit", 0, 40, fontsize=30)
+            img.drawText("MMB to abort current gesture", 0, 80, fontsize=30)
+            img.drawText(str(len(self.examples))+" examples shown", 400, 0, fontsize=30)
             img.save(display)
             if display.mouseLeft:
                 if time() - moment > d_time:

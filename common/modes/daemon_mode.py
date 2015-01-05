@@ -9,6 +9,7 @@ from vision.detection import Detector
 
 
 label1 = {True: "ON", False: "OFF"}
+no_disp_res = (500,150)
 
 class DaemonMode:
 
@@ -20,7 +21,10 @@ class DaemonMode:
         self.detector = Detector(self.video)
 
     def run(self):
-        display = scv.Display()
+        if self.display:
+            display = scv.Display()
+        else:
+            display = scv.Display(resolution=no_disp_res)
         tracking = False
 
         moment = time()
@@ -33,9 +37,10 @@ class DaemonMode:
             if self.display:
                 frame = img
             else:
-                frame = scv.Image((500,200))
+                frame = scv.Image(no_disp_res)
             frame.drawText(label1[tracking], 0, 0, fontsize=30)
             frame.drawText("LMB to start/stop tracking, RMB to exit", 0, 40, fontsize=30)
+            frame.drawText("MMB to abort current gesture", 0, 80, fontsize=30)
             frame.save(display)
             if display.mouseLeft:
                 if time() - moment > d_time:
@@ -50,5 +55,9 @@ class DaemonMode:
                     else:
                         tracking = True
                     moment = time()
+            if display.mouseMiddle:
+                if tracking:
+                    self.detector.resetTracker()
+                    tracking = False
             if display.mouseRight:
                 display.done = True
