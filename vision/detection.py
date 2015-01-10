@@ -5,6 +5,7 @@ import time
 from SimpleCV.base import np
 from common import dirs
 from vision.tracker import Tracker
+from common.config import close_ratio
 
 CONFIG_FILE = dirs.vision_config
 
@@ -46,8 +47,15 @@ class Detector:
         self.tracker = Tracker()
 
 
-    def detectAndTrack(self):
-        pass    #we need to deal with running this as long as key is pressed, no idea how
+    def isTrackerClose(self, frame):
+        frame = transformFrame(frame, self.twoRange, self.strict_ranges, self.loose_ranges)
+        blobs = frame.findBlobs()
+        if blobs:
+            circles = blobs.filter([b.isCircle(0.6) for b in blobs])
+            if circles:
+                if circles[-1].radius() >= close_ratio*frame.height:
+                    return True
+        return False
 
     def detectAndTrackForDuration(self, duration=5):
         startTime = time.time()

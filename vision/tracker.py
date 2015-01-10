@@ -1,15 +1,18 @@
 import math
 import SimpleCV as scv
 from vision.postprocessing import postprocess
+from common.config import still_frames
+
+
 
 class Tracker:
 
     SYMBOLS = {1: 'E', 2: 'NE', 3: 'N', 4: 'NW', 5: 'W', 6: 'SW', 7: 'S', 8: 'SE'}
 
-
     def __init__(self, observation_size = 100):
         self.history = []
         self.observation_size = observation_size
+        self.counter = 0
 
     @property
     def previous(self):
@@ -27,12 +30,22 @@ class Tracker:
         curr = (blob.x, blob.y)
         if self.previous is None:
             self.history.append(curr)
+            self.counter = 0
         else:
             d = self.distance(curr, self.previous)
             radius = blob.radius()
-            if d > radius/2 and d < radius*5:
+            if d > radius/1.5 and d < radius*5:
                 self.history.append(curr)
+                self.counter = 0
+            else:
+                self.counter += 1
         return symbol
+
+    def isStill(self):
+        return self.counter >= still_frames
+
+    def forgetHistory(self):
+        self.history = [self.history[-1]] if self.history else []
 
     def drawPath(self, img):
         if len(self.history) > 1:

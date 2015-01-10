@@ -16,11 +16,12 @@ CLI
         PROG calibrate [-h]
         PROG new <name>
         PROG teach <name>
-        PROG test
-        PROG daemon [-d] [--actions FILE]
+        PROG test [-s]
+        PROG daemon [-d] [-s] [--actions FILE]
         PROG pattern (activate|deactivate|remove) <name>
 
     Options:
         -h, --histogram             Use histogram based calibration
         -d, --display               Display camera image with tracking preview
+        -s, --standby               Enable hands-free standby mode
         -a=FILE --actions=FILE      Use custom actions file instead of default (default: ~/SW14/default.actions)

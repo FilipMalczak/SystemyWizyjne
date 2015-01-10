@@ -9,13 +9,14 @@ USAGE = '''Usage:
     PROG calibrate [-h]
     PROG new <name>
     PROG teach <name>
-    PROG test
-    PROG daemon [-d] [--actions FILE]
+    PROG test [-s]
+    PROG daemon [-d] [-s] [--actions FILE]
     PROG pattern (activate|deactivate|remove) <name>
 
 Options:
     -h, --histogram             Use histogram based calibration
     -d, --display               Display camera image with tracking preview
+    -s, --standby               Enable hands-free standby mode
     -a=FILE --actions=FILE      Use custom actions file instead of default (default: ~/SW14/default.actions)
 '''
 
@@ -26,9 +27,9 @@ def main(args=[]):
     if parsed['new'] or parsed['teach']:
         LearningMode(parsed['<name>'], parsed['new']).run()
     if parsed['test']:
-        TestMode().run()
+        TestMode(parsed['--standby']).run()
     if parsed['daemon']:
-        DaemonMode(parsed['--display'], parsed['--actions']).run()
+        DaemonMode(parsed['--display'], parsed['--standby'], parsed['--actions']).run()
     if parsed['pattern']:
         if parsed['activate']:
             recognizer.activate(parsed['<name>'])
